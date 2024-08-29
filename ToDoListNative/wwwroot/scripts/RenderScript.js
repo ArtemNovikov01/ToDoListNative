@@ -2,7 +2,7 @@
     let tableBody = document.querySelector('.table tbody');
     tableBody.innerHTML = '';
 
-    var arrayRecords = await getRecords(null, 1, 10);
+    var arrayRecords = await getRecords(null, 0, 10);
     const mappedRecords = arrayRecords.records.map(record => new RecordShortModels(record.id, record.title, record.status));
 
     mappedRecords.forEach((record, index) => {
@@ -43,16 +43,32 @@
         titleCell.textContent = record.title;
         row.appendChild(titleCell);
 
+        // кнопка просмотра
+        const viewCell = document.createElement('td');
+        const viewButton = document.createElement('button');
+        viewButton.textContent = 'Смотреть';
+        viewButton.className = 'btn btn-secondary btn-lg';
+        viewButton.style = 'font-size:small';
+
+        viewCell.appendChild(viewButton);
+        viewButton.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            RecordModalBuild(record.id);
+        });
+        row.appendChild(viewCell);
+
+        // кнопка удаления
         const deleteCell = document.createElement('td');
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Смотреть';
-        deleteButton.className = 'btn btn-secondary btn-lg';
+        deleteButton.textContent = 'Удалить';
+        deleteButton.className = 'btn btn-danger btn-lg';
         deleteButton.style = 'font-size:small';
 
         deleteCell.appendChild(deleteButton);
-        deleteButton.addEventListener('click', (event) => {
-            event.preventDefault(); 
-            RecordModalBuild(record.id);
+        deleteButton.addEventListener('click', async (event) => {
+            event.preventDefault();
+            await deleteRecord(record.id);
+            row.remove();
         });
         row.appendChild(deleteCell);
 

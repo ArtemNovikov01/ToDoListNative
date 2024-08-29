@@ -65,6 +65,14 @@ async function statusChangeRecord(id, status) {
     });
 }
 
+async function deleteRecord(id) {
+    const response = await fetch("api/record/deleteRecord?id="+id, {
+        method: "DELETE",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+    });
+}
+
+//ToDo Перенести в отдельный файл
 class FilterRecordsRequest {
     constructor(search = null, skip = 0, count = 0) {
         this.search = search;

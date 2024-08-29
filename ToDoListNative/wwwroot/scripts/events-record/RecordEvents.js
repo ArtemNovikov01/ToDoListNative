@@ -49,29 +49,37 @@
     else {
         let recordResponse = await getRecord(id);
 
+
         let record = new GetRecordInfoResponse(recordResponse.id, recordResponse.title, recordResponse.content, recordResponse.isComplete)
         const container = document.querySelector('.modal-body.overflow-auto');
         container.innerHTML = html;
 
-        var containerCheckBox = document.getElementById('containerChekBoxInput');
-        const checkbox = document.createElement('input');
-        checkbox.setAttribute('id','statusCheckBox');
-        checkbox.type = 'checkbox';
-        checkbox.checked = record.isComplete;
-        containerCheckBox.appendChild(checkbox);
+        let isComplete = record.isComplete;
+
+        //ToDo Разобраться почему не работает
+
+        //var containerCheckBox = document.getElementById('containerChekBoxInput');
+        //const checkbox = document.createElement('input');
+        //checkbox.setAttribute('id','statusCheckBox');
+        //checkbox.type = 'checkbox';
+        //checkbox.checked = record.isComplete;
+        //containerCheckBox.appendChild(checkbox);
+
+        //checkbox.addEventListener('click', (event) => {
+        //    isComplete = !isComplete;
+        //    console.log(isComplete);
+        //});
 
         var title = document.getElementById("RecordTitle");
         var content = document.getElementById("RecordContent");
-        var isComplete = document.getElementById("statusCheckBox");
 
         title.value = record.title
         content.value = record.content
         
-        //ToDo Разобраться почему не меняется checkbox
         const button = document.getElementById("SaveRecordButton");
         button.addEventListener('click', async (event) => {
             event.preventDefault();
-            await updateRecord(id, title.value, content.value, isComplete.);
+            await updateRecord(id, title.value, content.value, isComplete);
 
             modal.hide();
 
@@ -129,6 +137,35 @@ function RenderRow(record) {
     const titleCell = document.createElement('td');
     titleCell.textContent = record.title;
     row.appendChild(titleCell);
+
+    // кнопка просмотра
+    const viewCell = document.createElement('td');
+    const viewButton = document.createElement('button');
+    viewButton.textContent = 'Смотреть';
+    viewButton.className = 'btn btn-secondary btn-lg';
+    viewButton.style = 'font-size:small';
+
+    viewCell.appendChild(viewButton);
+    viewButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        RecordModalBuild(record.id);
+    });
+    row.appendChild(viewCell);
+
+    // кнопка удаления
+    const deleteCell = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Удалить';
+    deleteButton.className = 'btn btn-danger btn-lg';
+    deleteButton.style = 'font-size:small';
+
+    deleteCell.appendChild(deleteButton);
+    deleteButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await deleteRecord(record.id);
+        row.remove();
+    });
+    row.appendChild(deleteCell);
 
     tableBody.appendChild(row);
 }
