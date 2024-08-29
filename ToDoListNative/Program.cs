@@ -1,6 +1,12 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using ToDoListNative.Web;
 
-app.MapGet("/", () => "Hello World!");
+var app = WebApplication
+    .CreateBuilder(args)
+    .BuildWebApplication()
+    .Build();
+
+app.ConfigureWebApplication();
+
+//app.MapGet("/", () => "Hello World!");
 
 app.Run();

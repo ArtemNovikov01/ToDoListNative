@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ToDoListNative.Domain.Models.Entities;
 
 namespace ToDoListNative.Domain.Context
@@ -10,10 +9,6 @@ namespace ToDoListNative.Domain.Context
         {
             Database.EnsureCreated();
         }
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        //}
 
         public DbSet<Record> Records { get; set; }
     }

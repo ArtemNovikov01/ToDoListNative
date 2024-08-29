@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ToDoListNative.Domain.CoresInterfaces;
 using ToDoListNative.Domain.Models.Request;
 using ToDoListNative.Domain.Models.Response;
 
@@ -8,40 +9,95 @@ namespace ToDoListNative.Web.Controllers
     [Route("api/[controller]")]
     public class RecordController : ControllerBase
     {
-        [HttpGet]
+        private readonly IRecordCors _recordCors;
+        public RecordController(IRecordCors recordCors) 
+        {
+            _recordCors = recordCors;
+        }
+
+        [HttpGet("getRecord")]
         public async Task<ActionResult<GetRecordInfoResponse>> GetRecord(int id)
         {
-            return Ok();
+            try
+            {
+                var record = await _recordCors.GetRecord(id);
+                return Ok(record);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPost]
-        public async Task<ActionResult<GetRecordResponse>> GetRecords(FilterRecordsRequest request)
+        [HttpPost("getRecords")]
+        public ActionResult<GetRecordsResponse> GetRecords(FilterRecordsRequest request)
         {
-            return Ok();
+            try
+            {
+                var records = _recordCors.GetRecords(request);
+                return Ok(records);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPost]
-        public async Task<ActionResult<int>> CreateRecord(CreateRecordRequest request)
+        [HttpPost("createRecord")]
+        public async Task<ActionResult<GetRecordInfoResponse>> CreateRecord(CreateRecordRequest request)
         {
-            return Ok();
+            try
+            {
+                var record = await _recordCors.CreateRecord(request);
+                return Ok(record);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPut]
+        [HttpPut("updateRecord")]
         public async Task<ActionResult<GetRecordInfoResponse>> UpdateRecord(UpdateRecordRequest request)
         {
-            return Ok();
+            try
+            {
+                var record = await _recordCors.UpdateRecord(request);
+                return Ok(record);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPut]
-        public async Task<ActionResult> CompleteRecord(int id)
+        [HttpPut("statusChangeRecord")]
+        public async Task<ActionResult> StatusChangeRecord(ChangeStatusRecordRequest request)
         {
-            return Ok();
+
+            try
+            {
+                await _recordCors.StatusChangeRecord(request);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpDelete]
+        [HttpDelete("deleteRecord")]
         public async Task<ActionResult> DeleteRecord(int id)
         {
-            return Ok();
+            try
+            {
+                await _recordCors.DeleteRecord(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

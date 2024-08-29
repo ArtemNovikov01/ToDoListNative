@@ -1,6 +1,4 @@
-﻿using ToDoListNative.Domain.Models.Enums;
-
-namespace ToDoListNative.Domain.Models.Entities
+﻿namespace ToDoListNative.Domain.Models.Entities
 {
     public class Record
     {
@@ -19,12 +17,26 @@ namespace ToDoListNative.Domain.Models.Entities
         /// <summary>
         ///     Статус
         /// </summary>
-        public Status Status { get; private set; }
+        public bool IsComplete { get; private set; }
 
         public Record() { }
 
-        //public Record() {
-        //    Status = 0;
-        //}
+        public Record(string title, string content) {
+            Title = title;
+            Content = content;
+            IsComplete = false;
+        }
+
+        public void UpdateRecord(string title, string content, bool isComplete)
+        {
+            Title = title;
+            Content = content;
+            IsComplete = isComplete;
+        }
+
+        public void ChangeStatus(bool isComplete)
+        {
+            IsComplete = isComplete;
+        }
     }
 }

@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ToDoListNative.Application\ToDoListNative.Application.csproj" />
   </ItemGroup>
 

@@ -6,10 +6,10 @@ namespace ToDoListNative.Domain.CoresInterfaces
     public interface IRecordCors
     {
         public Task<GetRecordInfoResponse>  GetRecord(int id);
-        public Task<GetRecordResponse> GetRecords(FilterRecordsRequest request);
+        public GetRecordsResponse GetRecords(FilterRecordsRequest request);
         public Task<GetRecordInfoResponse> CreateRecord(CreateRecordRequest request);
         public Task<GetRecordInfoResponse> UpdateRecord(UpdateRecordRequest request);
         public Task DeleteRecord(int id);
-        public Task CompleteRecord(int id);
+        public Task StatusChangeRecord(ChangeStatusRecordRequest request);
     }
 }

@@ -17,7 +17,7 @@ namespace ToDoListNative.Domain.Configurations
             builder.Property(b => b.Content)
                 .IsRequired();
 
-            builder.Property(b => b.Status)
+            builder.Property(b => b.IsComplete)
                 .IsRequired();
         }
     }
