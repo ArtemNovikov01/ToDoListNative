@@ -26,12 +26,19 @@ namespace ToDoListNative.Web
 
         public static WebApplication ConfigureWebApplication(this WebApplication app)
         {
+            app.UseStaticFiles();
+
             app.UseSwagger();
             app.UseSwaggerUI(opt => { opt.SwaggerEndpoint("v1/swagger.json", "ToDo Test"); });
 
             app.UseRouting();
 
             app.MapControllers();
+
+            app.Map("/", async context => {
+                context.Response.ContentType = "text/html; charset=utf-8";
+                await context.Response.SendFileAsync("wwwroot/home-page.html");
+            });
 
             return app;
         }

@@ -7,6 +7,4 @@ var app = WebApplication
 
 app.ConfigureWebApplication();
 
-//app.MapGet("/", () => "Hello World!");
-
 app.Run();
