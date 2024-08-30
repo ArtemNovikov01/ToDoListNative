@@ -6,7 +6,9 @@ using ToDoListNative.Domain.CoresInterfaces;
 using ToDoListNative.Domain.Models.Request;
 using ToDoListNative.Domain.Models.Response;
 using ToDoListNative.Application.Extensions;
+using static ToDoListNative.Application.Extensions.RecordExtensions;
 using ToDoListNative.Domain.Models.Entities;
+using System.Collections.Generic;
 
 namespace ToDoListNative.Application.Cores;
 public class RecordCore : IRecordCors
@@ -33,7 +35,9 @@ public class RecordCore : IRecordCors
     {
         RecordValidator.CreateRecordValidator(request);
 
-        var record = RecordMapper.CreateRecordMapper(request);
+        var lastNumber = _recordContext.Records.Count() <= 0 ? 1 : await Task.Run(() => _recordContext.Records.Max(x => x.Number) + 1);
+
+        var record = RecordMapper.CreateRecordMapper(request, lastNumber);
         record = _recordContext.Records.Add(record).Entity;
         await _recordContext.SaveChangesAsync();
 
@@ -67,7 +71,9 @@ public class RecordCore : IRecordCors
 
         var query = _recordContext.Records.AsQueryable();
 
-        var recordsQuery = RecordExtensions.SearchRecord(query, request.Search);
+        var recordsQuery = query
+            .SearchRecord(request.Search)
+            .FilterIsComplete(request.IsComplete);
 
         var totalCount = recordsQuery.Count();
 
@@ -79,6 +85,7 @@ public class RecordCore : IRecordCors
                 new RecordDto()
                 {
                     Id = r.Id,
+                    Number = r.Number.ToString(),
                     Title = r.Title,
                     Status = r.IsComplete
                 })

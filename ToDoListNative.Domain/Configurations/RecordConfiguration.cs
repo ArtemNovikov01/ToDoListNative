@@ -11,6 +11,9 @@ namespace ToDoListNative.Domain.Configurations
         {
             builder.HasKey(b => b.Id);
 
+            builder.Property(b => b.Number)
+                .IsRequired();
+
             builder.Property(b => b.Title)
                 .IsRequired();
 

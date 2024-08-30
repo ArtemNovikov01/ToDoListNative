@@ -3,7 +3,7 @@
 namespace ToDoListNative.Application.Extensions;
 public static class RecordExtensions
 {
-    public static IQueryable<Record> SearchRecord(IQueryable<Record> query, string? search)
+    public static IQueryable<Record> SearchRecord(this IQueryable<Record> query, string? search)
     {
         var trimmedSearch = search?.Trim() ?? string.Empty;
 
@@ -12,6 +12,17 @@ public static class RecordExtensions
             return query;
         }
 
-        return query.Where(r => r.Title == search || r.Content == search);
+        return query.Where(r => r.Title.Contains(trimmedSearch!) || r.Number.ToString().Contains(trimmedSearch!));
+    }
+
+    public static IQueryable<Record> FilterIsComplete(this IQueryable<Record> query, bool? isComplete)
+    {
+
+        if (isComplete is null)
+        {
+            return query;
+        }
+
+        return query.Where(r => r.IsComplete == isComplete);
     }
 }

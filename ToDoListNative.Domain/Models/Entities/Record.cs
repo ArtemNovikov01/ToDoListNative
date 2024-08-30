@@ -5,6 +5,11 @@
         public int Id { get; private set; }
 
         /// <summary>
+        ///     Порядковый номер
+        /// </summary>
+        public int Number { get; private set; }
+
+        /// <summary>
         ///     Заголовок
         /// </summary>
         public string Title { get; private set; } = null!;
@@ -21,17 +26,17 @@
 
         public Record() { }
 
-        public Record(string title, string content) {
+        public Record(int number, string title, string content) {
+            Number = number;
             Title = title;
             Content = content;
             IsComplete = false;
         }
 
-        public void UpdateRecord(string title, string content, bool isComplete)
+        public void UpdateRecord(string title, string content)
         {
             Title = title;
             Content = content;
-            IsComplete = isComplete;
         }
 
         public void ChangeStatus(bool isComplete)

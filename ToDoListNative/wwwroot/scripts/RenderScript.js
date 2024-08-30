@@ -1,13 +1,16 @@
-﻿async function Render() {
+﻿async function Render(search = null, skip = 0, count = 10, isComplete = null) {
+
     let tableBody = document.querySelector('.table tbody');
+    let totalCountCell = document.getElementById('totalCount');
     tableBody.innerHTML = '';
 
-    var arrayRecords = await getRecords(null, 0, 10);
-    const mappedRecords = arrayRecords.records.map(record => new RecordShortModels(record.id, record.title, record.status));
+    var arrayRecords = await getRecords(search, skip, count, isComplete);
+    const mappedRecords = arrayRecords.records.map(record => new RecordShortModels(record.id, record.number, record.title, record.status));
 
     mappedRecords.forEach((record, index) => {
         const row = document.createElement('tr');
 
+        totalCountCell.innerText = arrayRecords.totalCount;
         // ID (скрытая)
         const idCell = document.createElement('td');
         idCell.textContent = record.id;
@@ -27,15 +30,15 @@
         checkbox.checked = record.status;
 
         checkboxCell.appendChild(checkbox);
-        checkbox.addEventListener('click', (event) => {
-            statusChangeRecord(record.id, !record.status);
+        checkbox.addEventListener('click', () => {
+            statusChangeRecord(record.id, checkbox.checked);
         });
 
         row.appendChild(checkboxCell);
 
         // номер
         const numberCell = document.createElement('td');
-        numberCell.textContent = index + 1;
+        numberCell.textContent = record.number;
         row.appendChild(numberCell);
 
         // заголовок
@@ -69,6 +72,8 @@
             event.preventDefault();
             await deleteRecord(record.id);
             row.remove();
+            let count = arrayRecords.totalCount - 1
+            totalCountCell.innerText = count;
         });
         row.appendChild(deleteCell);
 

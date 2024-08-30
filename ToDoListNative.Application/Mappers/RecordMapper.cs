@@ -10,20 +10,21 @@ public static class RecordMapper
         return new GetRecordInfoResponse
         {
             Id = record.Id,
+            Number = record.Number.ToString(),
             Title = record.Title,
             Content = record.Content,
             isComplete = record.IsComplete
         };
     }
 
-    public static Record CreateRecordMapper(CreateRecordRequest request)
+    public static Record CreateRecordMapper(CreateRecordRequest request, int number)
     {
-        return new Record(request.Title,request.Content);
+        return new Record(number, request.Title,request.Content);
     }
 
     public static Record UpdateRecordMapper(Record record, UpdateRecordRequest request)
     {
-        record.UpdateRecord(request.Title, request.Content, request.isComplete);
+        record.UpdateRecord(request.Title, request.Content);
 
         return record;
     }

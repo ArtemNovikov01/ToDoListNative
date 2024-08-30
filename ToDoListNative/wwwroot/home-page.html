@@ -6,11 +6,12 @@
     <link href="./styles/table-styles.css" rel="stylesheet">
     <script src="./scripts/RenderScript.js"></script>
     <script src="./scripts/services-record/RecordsService.js"></script>
-    <script src="./scripts/models/report-short-model.js"></script>
+    <script src="./scripts/models/record-short-model.js"></script>
     <script src="./scripts/events-record/RecordEvents.js"></script>
     <script src="./scripts/models/requests/change-status-request.js"></script>
     <script src="./scripts/models/requests/create-record-request.js"></script>
     <script src="./scripts/models/requests/update-record-request.js"></script>
+    <script src="./scripts/models/requests/filter-records-request.js"></script>
     <script src="./scripts/models/responses/get-record-response.js"></script>
     <title>ToDoList</title>
 </head>
@@ -19,10 +20,19 @@
         <div>
             <div class="col-12">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-6">
                         <h1>Список задач</h1>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
+                            <select class="form-select" id="filterComplete">
+                                <option hidden>Статус </option>
+                                <option value="0">Выполнена</option>
+                                <option value="1">Невыполнена</option>
+                                <option value="2">Неважно</option>
+                            </select>
+                        
+                    </div>
+                    <div class="col-3">
                         <button id="createRecordButton" class="btn btn-secondary btn-lg" style="font-size:small">Добавить запись</button>
                     </div>
                 </div>
@@ -43,24 +53,108 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col" hidden></th>
-                        <th scope="col">Статус</th>
-                        <th scope="col">Номер</th>
-                        <th scope="col">Title</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
+                        <th style="width: 20%;" scope="col" hidden></th>
+                        <th style="width: 20%;" scope="col">Статус</th>
+                        <th style="width: 20%;" scope="col">Номер</th>
+                        <th style="width: 20%;" scope="col">Title</th>
+                        <th style="width: 10%;" scope="col"><p style="font-weight: 400; margin-left: 20px;">Поиск:</p></th>
+                        <th style="width: 10%;" scope="col"> <input class="form-control" style="margin-left: -20px;" id="searchRecord"></th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Всего: <span id="totalCount"></span></td>
+                        <td></td>
+                        <td><button class="btn btn-secondary btn-lg" style="font-size:small" id="backButton">Назад</button></td>
+                        <td><input class="form-control" value="10" style="margin-left: -30px; margin-bottom: -35px; " id="countRows"><br>
+                        <p id="validPag" style="color:red" hidden><p></td>
+                        <td><button class="btn btn-secondary btn-lg" style="font-size: small; margin-left: -20px;" id="nextButton">Вперёд</button></td>
+                    </tr>
+                </tfoot>
             </table>
             <script>
-                Render();
-                //ToDo Добавить кнопки пагинации
+                let skipCount = 0;
+                Render(null, 0, 10);
+
                 function EventListener() {
                     const addRecordButton = document.getElementById("createRecordButton");
                     addRecordButton.addEventListener("click", (event) => {
                         RecordModalBuild(0)
+                    });
+
+                    const selectCountInput = document.getElementById("countRows");
+                    selectCountInput.addEventListener("change", (event) => {
+                        let selectCount = parseInt(selectCountInput.value, 10);
+                        const errorMessage = document.getElementById("validPag");
+
+                        if (isNaN(selectCount)) {
+                            errorMessage.innerHTML = 'Введите число'
+                            errorMessage.removeAttribute('hidden');
+                        }
+                        else {
+                            errorMessage.innerHTML = ''
+                            let tableBody = document.querySelector('.table tbody');
+                            tableBody.innerHTML = '';
+                            Render(0, selectCountInput.value);
+                        }
+                    });
+
+                    const searchInput = document.getElementById("searchRecord");
+                    searchInput.addEventListener("change", (event) => {
+                        const selectCountInput = document.getElementById("countRows");
+                        const filterCompleteBox = document.getElementById("filterComplete");
+
+                        searchRecord = searchInput.value;
+                        let tableBody = document.querySelector('.table tbody');
+                        tableBody.innerHTML = '';
+                        Render(searchRecord, 0, selectCountInput.value, filterCompleteBox.checked);
+                    });
+
+                    const nextButton = document.getElementById("nextButton");
+                    nextButton.addEventListener("click", (event) => {
+                        const selectCountInput = document.getElementById("countRows");
+                        const totalCount = document.getElementById("totalCount");
+
+                        if (skipCount <= parseInt(totalCount.innerText, 10)-2) {
+
+                            skipCount = skipCount + parseInt(selectCountInput.value, 10);
+                            let tableBody = document.querySelector('.table tbody');
+                            tableBody.innerHTML = '';
+                            Render(null, skipCount, selectCountInput.value);
+                        }
+                    });
+
+                    const backButton = document.getElementById("backButton");
+                    backButton.addEventListener("click", (event) => {
+                        const selectCountInput = document.getElementById("countRows");
+
+                        if (skipCount > 0) {
+
+                            skipCount = skipCount - parseInt(selectCountInput.value, 10);
+                            let tableBody = document.querySelector('.table tbody');
+                            tableBody.innerHTML = '';
+                            Render(null, skipCount, selectCountInput.value);
+                        }
+                    });
+
+                    const filterCompleteBox = document.getElementById("filterComplete");
+                    filterCompleteBox.addEventListener("change", (event) => {
+                        const selectCountInput = document.getElementById("countRows");
+
+                        let typeRecord = null;
+
+                        if (filterCompleteBox.value === "0") {
+                            typeRecord = true;
+                        }
+                        else if (filterCompleteBox.value === "0") {
+                            typeRecord = false;
+                        }
+
+                        let tableBody = document.querySelector('.table tbody');
+                        tableBody.innerHTML = '';
+                        Render(null, skipCount, selectCountInput.value, typeRecord);
                     });
                 }
 

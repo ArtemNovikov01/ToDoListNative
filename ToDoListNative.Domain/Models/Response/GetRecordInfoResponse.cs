@@ -3,6 +3,7 @@
     public class GetRecordInfoResponse
     {
         public int Id { get; set; }
+        public string Number { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;
         public bool isComplete { get; set; }
