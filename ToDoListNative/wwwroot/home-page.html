@@ -94,10 +94,12 @@
                             errorMessage.removeAttribute('hidden');
                         }
                         else {
-                            errorMessage.innerHTML = ''
-                            let tableBody = document.querySelector('.table tbody');
-                            tableBody.innerHTML = '';
-                            Render(0, selectCountInput.value);
+                            if (selectCount > 0) {
+                                errorMessage.innerHTML = ''
+                                let tableBody = document.querySelector('.table tbody');
+                                tableBody.innerHTML = '';
+                                Render(null, 0, selectCountInput.value, null);
+                            }
                         }
                     });
 
